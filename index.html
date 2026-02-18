@@ -1,0 +1,1399 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>OpenClaw — Complete Setup & Automation Guide</title>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Source+Serif+4:ital,wght@0,400;0,500;0,600;1,400&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --orange: #e85d00;
+  --orange-light: #fff3ec;
+  --orange-border: #ffd4b8;
+  --orange-mid: rgba(232,93,0,0.12);
+  --bg: #fafaf8;
+  --bg2: #f4f3ef;
+  --bg3: #eeede8;
+  --bg4: #e8e6e0;
+  --border: #e2e0d8;
+  --border2: #d4d1c8;
+  --text: #1a1916;
+  --text2: #5a5750;
+  --text3: #9a9690;
+  --code-bg: #1e1e1e;
+  --code-text: #d4d4d4;
+  --green: #1a7f4b;
+  --green-bg: #edfaf3;
+  --green-border: #b3e8cc;
+  --red: #c0392b;
+  --red-bg: #fdf2f1;
+  --red-border: #f5c0bb;
+  --yellow: #a05c00;
+  --yellow-bg: #fef9ec;
+  --yellow-border: #fde8a0;
+  --blue: #1a5fa8;
+  --blue-bg: #eff6ff;
+  --blue-border: #bdd7f8;
+  --sidebar: 268px;
+  --serif: 'Source Serif 4', 'Instrument Serif', serif;
+  --mono: 'DM Mono', 'SFMono-Regular', ui-monospace, monospace;
+  --sans: 'Manrope', 'Outfit', sans-serif;
+}
+
+* { margin:0; padding:0; box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--sans);
+  font-size: 15px;
+  line-height: 1.7;
+}
+
+/* ── ICONS ── */
+.icon-sprite { position: absolute; width: 0; height: 0; overflow: hidden; }
+.icon {
+  width: 18px;
+  height: 18px;
+  display: inline-block;
+  stroke: currentColor;
+  fill: none;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  vertical-align: middle;
+}
+.icon.lg { width: 22px; height: 22px; }
+.icon.sm { width: 14px; height: 14px; stroke-width: 1.6; }
+.inline-icon { display: inline-flex; align-items: center; justify-content: center; width: 16px; height: 16px; margin-right: 6px; vertical-align: -2px; }
+
+
+/* ── SIDEBAR ── */
+.sidebar {
+  position: fixed;
+  left: 0; top: 0;
+  width: var(--sidebar);
+  height: 100vh;
+  background: #fff;
+  border-right: 1px solid var(--border);
+  overflow-y: auto;
+  z-index: 100;
+  display: flex;
+  flex-direction: column;
+}
+.sidebar::-webkit-scrollbar { width: 3px; }
+.sidebar::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 2px; }
+
+.sb-logo {
+  padding: 24px 20px 18px;
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+}
+.sb-logo-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 14px;
+}
+.sb-icon {
+  width: 34px; height: 34px;
+  background: var(--orange);
+  border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 17px;
+  flex-shrink: 0;
+  color: #fff;
+}
+.sb-title { font-size: 15px; font-weight: 700; color: var(--text); letter-spacing: -0.01em; }
+.sb-subtitle { font-size: 10px; color: var(--text3); font-family: var(--mono); }
+
+.sb-progress {
+  height: 4px;
+  background: var(--bg3);
+  border-radius: 2px;
+  overflow: hidden;
+}
+.sb-progress-fill {
+  height: 100%;
+  background: var(--orange);
+  border-radius: 2px;
+  width: 0%;
+  transition: width 0.4s ease;
+}
+.sb-progress-label {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 5px;
+  font-size: 10px;
+  color: var(--text3);
+  font-family: var(--mono);
+}
+
+.sb-nav { padding: 12px 0 20px; flex: 1; }
+.sb-section { margin-bottom: 2px; }
+.sb-section-title {
+  padding: 8px 20px 3px;
+  font-size: 9px;
+  text-transform: uppercase;
+  letter-spacing: 0.16em;
+  color: var(--text3);
+  font-family: var(--mono);
+  font-weight: 500;
+}
+.sb-link {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 20px;
+  font-size: 12.5px;
+  color: var(--text2);
+  text-decoration: none;
+  font-family: var(--mono);
+  transition: all 0.12s;
+  border-left: 2px solid transparent;
+}
+.sb-link:hover { color: var(--text); background: var(--bg2); }
+.sb-link.active { color: var(--orange); border-left-color: var(--orange); background: var(--orange-light); font-weight: 500; }
+.sb-link.done { color: var(--green); }
+.sb-num {
+  width: 17px; height: 17px;
+  border-radius: 4px;
+  background: var(--bg3);
+  border: 1px solid var(--border2);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 9px;
+  flex-shrink: 0;
+  transition: all 0.15s;
+  font-weight: 500;
+}
+.sb-link.active .sb-num { background: var(--orange); border-color: var(--orange); color: #fff; }
+.sb-link.done .sb-num { background: var(--green-bg); border-color: var(--green-border); color: var(--green); }
+
+/* ── MAIN ── */
+.main { margin-left: var(--sidebar); }
+
+/* ── HERO ── */
+.hero {
+  padding: 64px 72px 56px;
+  border-bottom: 1px solid var(--border);
+  background: #fff;
+  position: relative;
+  overflow: hidden;
+}
+.hero::before {
+  content: '';
+  position: absolute;
+  right: -60px; top: -60px;
+  width: 400px; height: 400px;
+  background: radial-gradient(circle, var(--orange-light) 0%, transparent 70%);
+  pointer-events: none;
+}
+.hero-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 12px;
+  background: var(--orange-light);
+  border: 1px solid var(--orange-border);
+  border-radius: 100px;
+  font-size: 11px;
+  font-family: var(--mono);
+  color: var(--orange);
+  margin-bottom: 20px;
+  letter-spacing: 0.03em;
+}
+.hero-tag-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--orange); animation: blink 2s infinite; }
+@keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.3} }
+
+.hero h1 {
+  font-family: var(--serif);
+  font-size: 54px;
+  font-weight: 400;
+  line-height: 1.08;
+  letter-spacing: -0.02em;
+  max-width: 600px;
+  margin-bottom: 18px;
+  color: var(--text);
+}
+.hero h1 em { color: var(--orange); font-style: italic; }
+
+.hero-lead {
+  font-size: 15px;
+  color: var(--text2);
+  max-width: 500px;
+  line-height: 1.75;
+  margin-bottom: 32px;
+  font-weight: 300;
+}
+
+.hero-pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+  margin-bottom: 36px;
+}
+.pill {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 5px 12px;
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: 100px;
+  font-size: 11.5px;
+  font-family: var(--mono);
+  color: var(--text2);
+}
+.pill-dot { width: 6px; height: 6px; border-radius: 50%; }
+
+.hero-stats {
+  display: flex;
+  gap: 0;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  overflow: hidden;
+  width: fit-content;
+  background: #fff;
+}
+.stat {
+  padding: 14px 24px;
+  border-right: 1px solid var(--border);
+  text-align: center;
+}
+.stat:last-child { border-right: none; }
+.stat-n { font-size: 22px; font-weight: 700; font-family: var(--mono); color: var(--text); display: block; line-height: 1; margin-bottom: 3px; }
+.stat-l { font-size: 10px; color: var(--text3); font-family: var(--mono); text-transform: uppercase; letter-spacing: 0.1em; }
+
+/* ── CONTENT ── */
+.content { max-width: 800px; padding: 0 72px 100px; }
+
+/* ── SECTIONS ── */
+.section { padding-top: 56px; }
+
+.sec-tag {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 16px;
+}
+.sec-n {
+  width: 28px; height: 28px;
+  border-radius: 7px;
+  background: var(--orange);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 12px;
+  font-weight: 700;
+  font-family: var(--mono);
+  color: #fff;
+  flex-shrink: 0;
+}
+.sec-n.muted { background: var(--bg3); color: var(--text2); }
+.sec-n.done { background: var(--green-bg); color: var(--green); border: 1px solid var(--green-border); }
+
+.sec-h {
+  font-family: var(--serif);
+  font-size: 32px;
+  font-weight: 400;
+  letter-spacing: -0.02em;
+  line-height: 1.15;
+  margin-bottom: 6px;
+  color: var(--text);
+}
+.sec-sub {
+  font-size: 14px;
+  color: var(--text2);
+  font-weight: 300;
+  max-width: 520px;
+  line-height: 1.7;
+}
+
+.divider { border: none; border-top: 1px solid var(--border); margin: 0 72px; }
+
+/* ── CALLOUTS ── */
+.callout {
+  border-radius: 10px;
+  padding: 14px 18px;
+  margin: 16px 0;
+  display: flex;
+  gap: 12px;
+  font-size: 13.5px;
+  line-height: 1.65;
+  align-items: flex-start;
+}
+.callout-icon { flex-shrink: 0; margin-top: 1px; display: flex; align-items: center; }
+.callout-icon .icon { width: 18px; height: 18px; }
+.callout-body { flex: 1; }
+.callout-title { font-weight: 600; font-size: 13px; margin-bottom: 3px; }
+.callout-text { font-weight: 300; }
+.callout-text code { font-family: var(--mono); font-size: 11px; background: rgba(0,0,0,0.06); padding: 1px 5px; border-radius: 3px; }
+.callout.ok { background: var(--green-bg); border: 1px solid var(--green-border); }
+.callout.ok .callout-title { color: var(--green); }
+.callout.ok .callout-text { color: #2d6b4a; }
+.callout.ok .callout-icon { color: var(--green); }
+.callout.warn { background: var(--yellow-bg); border: 1px solid var(--yellow-border); }
+.callout.warn .callout-title { color: var(--yellow); }
+.callout.warn .callout-text { color: #7a4500; }
+.callout.warn .callout-icon { color: var(--yellow); }
+.callout.err { background: var(--red-bg); border: 1px solid var(--red-border); }
+.callout.err .callout-title { color: var(--red); }
+.callout.err .callout-text { color: #8b2a20; }
+.callout.err .callout-icon { color: var(--red); }
+.callout.tip { background: var(--blue-bg); border: 1px solid var(--blue-border); }
+.callout.tip .callout-title { color: var(--blue); }
+.callout.tip .callout-text { color: #1a4a80; }
+.callout.tip .callout-icon { color: var(--blue); }
+.callout.orange { background: var(--orange-light); border: 1px solid var(--orange-border); }
+.callout.orange .callout-title { color: var(--orange); }
+.callout.orange .callout-text { color: #8b3800; }
+.callout.orange .callout-icon { color: var(--orange); }
+
+/* ── CODE ── */
+.code-wrap {
+  margin: 14px 0;
+  border-radius: 10px;
+  overflow: hidden;
+  border: 1px solid var(--border2);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+}
+.code-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 14px;
+  background: #2a2a2a;
+  border-bottom: 1px solid #333;
+}
+.code-bar-left { display: flex; align-items: center; gap: 8px; }
+.dots { display: flex; gap: 5px; }
+.dots span { width: 10px; height: 10px; border-radius: 50%; }
+.dots .d1 { background: #ff5f57; }
+.dots .d2 { background: #ffbd2e; }
+.dots .d3 { background: #28c940; }
+.code-label { font-size: 11px; font-family: var(--mono); color: #666; }
+.copy-btn {
+  font-family: var(--mono);
+  font-size: 10px;
+  background: none;
+  border: 1px solid #444;
+  color: #888;
+  padding: 3px 9px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.copy-btn:hover { color: #ccc; border-color: #666; }
+.copy-btn.copied { color: #28c940; border-color: #28c940; }
+.code-body {
+  background: var(--code-bg);
+  padding: 16px 18px;
+  overflow-x: auto;
+}
+.code-body pre {
+  font-family: var(--mono);
+  font-size: 12.5px;
+  line-height: 1.9;
+  color: var(--code-text);
+  white-space: pre;
+}
+.cm { color: #6a9955; }
+.ck { color: #569cd6; }
+.cs { color: #ce9178; }
+.cv { color: #9cdcfe; }
+.cg { color: #4ec9b0; }
+.co { color: #ff8c00; }
+.ce { color: #f44747; }
+
+/* ── RESULT BLOCKS ── */
+.result {
+  border-radius: 8px;
+  overflow: hidden;
+  border: 1px solid var(--border);
+  margin: 10px 0;
+}
+.result-head {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 8px 14px;
+  font-size: 11px;
+  font-family: var(--mono);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  border-bottom: 1px solid var(--border);
+}
+.result-head .icon { margin-right: 6px; }
+.result-head .dot { width: 7px; height: 7px; border-radius: 50%; }
+.result-body {
+  padding: 12px 14px;
+  font-family: var(--mono);
+  font-size: 12px;
+  line-height: 1.8;
+  color: var(--text2);
+}
+
+.result.succ .result-head { background: var(--green-bg); color: var(--green); border-bottom-color: var(--green-border); }
+.result.succ .result-head .dot { background: var(--green); }
+.result.succ .result-body { background: #f8fdfb; }
+.result.fail .result-head { background: var(--red-bg); color: var(--red); border-bottom-color: var(--red-border); }
+.result.fail .result-head .dot { background: var(--red); }
+.result.fail .result-body { background: #fefaf9; }
+.result.fix .result-head { background: var(--yellow-bg); color: var(--yellow); border-bottom-color: var(--yellow-border); }
+.result.fix .result-head .dot { background: #f0a500; }
+.result.fix .result-body { background: #fffdf5; }
+
+/* ── STEPS ── */
+.steps { display: flex; flex-direction: column; gap: 0; margin: 12px 0; }
+.step { display: flex; gap: 16px; padding-bottom: 24px; position: relative; }
+.step:not(:last-child)::before {
+  content: '';
+  position: absolute;
+  left: 13px; top: 28px; bottom: 0;
+  width: 1px;
+  background: linear-gradient(to bottom, var(--border2), transparent);
+}
+.step-dot {
+  width: 28px; height: 28px;
+  border-radius: 50%;
+  border: 1.5px solid var(--border2);
+  background: #fff;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 11px;
+  font-family: var(--mono);
+  color: var(--text3);
+  flex-shrink: 0;
+  z-index: 1;
+}
+.step-dot.on { border-color: var(--orange); color: var(--orange); background: var(--orange-light); }
+.step-dot.ok { border-color: var(--green-border); color: var(--green); background: var(--green-bg); }
+.step-c { flex: 1; padding-top: 3px; }
+.step-title { font-size: 14.5px; font-weight: 600; margin-bottom: 4px; color: var(--text); }
+.step-desc { font-size: 13px; color: var(--text2); line-height: 1.7; font-weight: 300; }
+.status-dot { display: inline-block; width: 10px; height: 10px; border-radius: 50%; background: var(--text3); margin-left: 6px; vertical-align: -1px; }
+.status-dot.ok { background: var(--green); box-shadow: 0 0 0 3px var(--green-bg); }
+
+/* ── TABLES ── */
+table { width: 100%; border-collapse: collapse; margin: 14px 0; font-size: 13px; }
+thead th {
+  text-align: left;
+  padding: 9px 12px;
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--text3);
+  font-family: var(--mono);
+  border-bottom: 1.5px solid var(--border2);
+  background: var(--bg2);
+  font-weight: 500;
+}
+td {
+  padding: 11px 12px;
+  border-bottom: 1px solid var(--border);
+  color: var(--text2);
+  font-weight: 300;
+  vertical-align: top;
+}
+td strong { color: var(--text); font-weight: 600; }
+tr:last-child td { border-bottom: none; }
+tr:hover td { background: var(--bg2); }
+
+/* ── BADGES ── */
+.badge {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 10px;
+  font-family: var(--mono);
+  font-weight: 500;
+}
+.badge svg { width: 11px; height: 11px; margin-right: 4px; vertical-align: -2px; }
+.bg { background: var(--green-bg); color: var(--green); border: 1px solid var(--green-border); }
+.by { background: var(--yellow-bg); color: var(--yellow); border: 1px solid var(--yellow-border); }
+.br { background: var(--red-bg); color: var(--red); border: 1px solid var(--red-border); }
+.bb { background: var(--blue-bg); color: var(--blue); border: 1px solid var(--blue-border); }
+.bo { background: var(--orange-light); color: var(--orange); border: 1px solid var(--orange-border); }
+
+/* ── SKILL CARDS ── */
+.skill-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 16px 0; }
+.skill-card {
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 16px;
+  transition: all 0.15s;
+  position: relative;
+}
+.skill-card:hover { border-color: var(--orange-border); box-shadow: 0 4px 12px rgba(232,93,0,0.08); transform: translateY(-1px); }
+.skill-card-top { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
+.skill-card-icon { font-size: 20px; }
+.skill-card-icon .icon { width: 20px; height: 20px; }
+.skill-card-name { font-size: 13.5px; font-weight: 700; color: var(--text); }
+.skill-card-desc { font-size: 12px; color: var(--text2); line-height: 1.6; margin-bottom: 10px; font-weight: 300; }
+.skill-card-cmd { font-family: var(--mono); font-size: 10.5px; background: var(--bg2); border: 1px solid var(--border); padding: 5px 10px; border-radius: 5px; color: var(--text2); display: block; }
+.skill-badge {
+  position: absolute;
+  top: 12px; right: 12px;
+}
+
+/* ── ARCH DIAGRAM ── */
+.arch {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 24px;
+  margin: 16px 0;
+  overflow-x: auto;
+}
+.arch-flow { display: flex; align-items: center; gap: 0; min-width: fit-content; }
+.arch-node {
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 12px 16px;
+  text-align: center;
+  min-width: 100px;
+  transition: border-color 0.15s;
+}
+.arch-node:hover { border-color: var(--orange-border); }
+.arch-node-icon { font-size: 20px; margin-bottom: 4px; }
+.arch-node-icon .icon { width: 20px; height: 20px; }
+.arch-node-name { font-size: 12px; font-weight: 700; color: var(--text); margin-bottom: 2px; }
+.arch-node-sub { font-size: 10px; color: var(--text3); font-family: var(--mono); }
+.arch-arr { padding: 0 6px; color: var(--orange); font-size: 14px; }
+
+/* ── POSS GRID ── */
+.poss-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 16px 0; }
+.poss-card {
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 18px;
+  transition: all 0.15s;
+}
+.poss-card:hover { border-color: var(--orange-border); transform: translateY(-1px); box-shadow: 0 4px 12px rgba(232,93,0,0.06); }
+.poss-icon { font-size: 22px; margin-bottom: 10px; }
+.poss-icon .icon { width: 22px; height: 22px; }
+.poss-title { font-size: 14px; font-weight: 700; margin-bottom: 5px; color: var(--text); }
+.poss-desc { font-size: 12px; color: var(--text2); line-height: 1.65; font-weight: 300; }
+
+/* ── SECTION DIVIDER ── */
+.sec-divider {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding-top: 56px;
+}
+.sec-divider-line { flex: 1; height: 1px; background: var(--border); }
+.sec-divider-label {
+  font-size: 10px;
+  font-family: var(--mono);
+  color: var(--text3);
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  white-space: nowrap;
+}
+
+/* ── TYPOGRAPHY ── */
+h3 { font-size: 17px; font-weight: 700; color: var(--text); margin: 22px 0 10px; letter-spacing: -0.01em; }
+h4 { font-size: 12px; font-weight: 600; color: var(--text3); text-transform: uppercase; letter-spacing: 0.1em; margin: 16px 0 8px; font-family: var(--mono); }
+p { font-size: 14px; color: var(--text2); line-height: 1.75; margin-bottom: 12px; font-weight: 300; }
+p strong { color: var(--text); font-weight: 600; }
+code { font-family: var(--mono); font-size: 11.5px; background: var(--bg3); border: 1px solid var(--border2); padding: 1px 5px; border-radius: 3px; color: var(--orange); }
+ul { list-style: none; margin: 8px 0 14px; }
+ul li { padding: 3px 0; font-size: 13.5px; color: var(--text2); display: flex; gap: 8px; font-weight: 300; }
+ul li::before { content: '→'; color: var(--orange); font-size: 11px; margin-top: 4px; flex-shrink: 0; }
+
+/* ── FINAL ── */
+.final {
+  background: linear-gradient(135deg, var(--green-bg), #f0fdf6);
+  border: 1px solid var(--green-border);
+  border-radius: 14px;
+  padding: 36px;
+  text-align: center;
+  margin-top: 20px;
+}
+.final-icon { font-size: 48px; margin-bottom: 14px; display: block; }
+.final-icon .icon { width: 48px; height: 48px; }
+.final h3 { font-family: var(--serif); font-size: 28px; font-weight: 400; color: var(--green); margin-bottom: 8px; }
+.final p { font-size: 14px; color: #2d6b4a; }
+
+@media(max-width:880px) {
+  :root { --sidebar: 0px; }
+  .sidebar { display: none; }
+  .main { margin-left: 0; }
+  .hero { padding: 36px 24px; }
+  .content { padding: 0 24px 60px; }
+  .divider { margin: 0 24px; }
+  .hero h1 { font-size: 36px; }
+  .poss-grid, .skill-grid { grid-template-columns: 1fr; }
+  .hero-stats { flex-wrap: wrap; }
+  .arch-flow { flex-direction: column; align-items: center; }
+  .arch-arr { transform: rotate(90deg); }
+}
+</style>
+</head>
+<body>
+<svg class="icon-sprite" xmlns="http://www.w3.org/2000/svg">
+  <symbol id="icon-openclaw" viewBox="0 0 24 24">
+    <path d="M5 14c0-3.5 3-6.5 7-6.5s7 3 7 6.5-2.5 6.5-7 6.5-7-3-7-6.5z"></path>
+    <path d="M9.2 12.2 11 9"></path>
+    <path d="M14.8 12.2 13 9"></path>
+    <path d="M10 15l2 1.5 2-1.5"></path>
+  </symbol>
+  <symbol id="icon-phone" viewBox="0 0 24 24">
+    <rect x="7" y="3" width="10" height="18" rx="2"></rect>
+    <path d="M9 7h6"></path>
+    <path d="M9 17h6"></path>
+  </symbol>
+  <symbol id="icon-globe" viewBox="0 0 24 24">
+    <circle cx="12" cy="12" r="9"></circle>
+    <path d="M3 12h18"></path>
+    <path d="M12 3a15 15 0 0 1 0 18"></path>
+    <path d="M12 3a15 15 0 0 0 0 18"></path>
+  </symbol>
+  <symbol id="icon-switch" viewBox="0 0 24 24">
+    <polyline points="16 3 21 3 21 8"></polyline>
+    <path d="M4 20 20 4"></path>
+    <polyline points="4 4 4 9 9 9"></polyline>
+  </symbol>
+  <symbol id="icon-robot" viewBox="0 0 24 24">
+    <rect x="5" y="8" width="14" height="10" rx="2"></rect>
+    <path d="M9 5h6"></path>
+    <path d="M12 2v3"></path>
+    <circle cx="9" cy="13" r="1"></circle>
+    <circle cx="15" cy="13" r="1"></circle>
+  </symbol>
+  <symbol id="icon-megaphone" viewBox="0 0 24 24">
+    <path d="M3 11 14 6v12L3 13v-2z"></path>
+    <path d="M14 8v8"></path>
+    <path d="M17 10c1.5 0 2.5 1 2.5 2s-1 2-2.5 2"></path>
+    <path d="M3 13 5.5 21"></path>
+  </symbol>
+  <symbol id="icon-check" viewBox="0 0 24 24">
+    <path d="M5 13 10 18 19 7"></path>
+  </symbol>
+  <symbol id="icon-x" viewBox="0 0 24 24">
+    <path d="M18 6 6 18"></path>
+    <path d="M6 6 18 18"></path>
+  </symbol>
+  <symbol id="icon-warning" viewBox="0 0 24 24">
+    <path d="M12 3 21 19H3z"></path>
+    <path d="M12 9v4"></path>
+    <circle cx="12" cy="15.5" r="0.6"></circle>
+  </symbol>
+  <symbol id="icon-lightbulb" viewBox="0 0 24 24">
+    <path d="M9 18h6"></path>
+    <path d="M10 22h4"></path>
+    <path d="M12 2a7 7 0 0 1 4 12l-1 1.5v2h-6v-2L8 14A7 7 0 0 1 12 2z"></path>
+  </symbol>
+  <symbol id="icon-sparkles" viewBox="0 0 24 24">
+    <path d="M12 5v4"></path>
+    <path d="M12 15v4"></path>
+    <path d="M5 12h4"></path>
+    <path d="M15 12h4"></path>
+    <path d="m7.8 7.8 2.8 2.8"></path>
+    <path d="m13.4 13.4 2.8 2.8"></path>
+    <path d="m7.8 16.2 2.8-2.8"></path>
+    <path d="m13.4 10.6 2.8-2.8"></path>
+    <circle cx="12" cy="12" r="2.5"></circle>
+  </symbol>
+  <symbol id="icon-wrench" viewBox="0 0 24 24">
+    <path d="M14.7 6.3a5 5 0 0 1-6.4 6.4L4 17l3 3 4.3-4.3a5 5 0 0 1 6.4-6.4l-3-3z"></path>
+    <circle cx="7" cy="17" r="0.9"></circle>
+  </symbol>
+  <symbol id="icon-note" viewBox="0 0 24 24">
+    <path d="M4 5a2 2 0 0 1 2-2h8l6 6v10a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2z"></path>
+    <path d="M14 3v5h5"></path>
+    <path d="M8 13h8"></path>
+    <path d="M8 17h5"></path>
+  </symbol>
+  <symbol id="icon-calendar" viewBox="0 0 24 24">
+    <rect x="4" y="5" width="16" height="15" rx="2"></rect>
+    <path d="M16 3v4"></path>
+    <path d="M8 3v4"></path>
+    <path d="M4 11h16"></path>
+  </symbol>
+  <symbol id="icon-book" viewBox="0 0 24 24">
+    <path d="M4 5a2 2 0 0 1 2-2h6v18H6a2 2 0 0 1-2-2z"></path>
+    <path d="M12 3h6a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-6"></path>
+    <path d="M12 8h8"></path>
+  </symbol>
+  <symbol id="icon-bell" viewBox="0 0 24 24">
+    <path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"></path>
+    <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+  </symbol>
+  <symbol id="icon-chat" viewBox="0 0 24 24">
+    <path d="M21 11.5a8.5 8.5 0 0 1-11.9 7.8L3 21l1.7-4.1A8.5 8.5 0 1 1 21 11.5z"></path>
+    <path d="M8 11h8"></path>
+    <path d="M8 15h5"></path>
+  </symbol>
+  <symbol id="icon-cloud-sun" viewBox="0 0 24 24">
+    <circle cx="7" cy="7" r="3"></circle>
+    <path d="M7 1v2"></path>
+    <path d="M1 7h2"></path>
+    <path d="M7 11v2"></path>
+    <path d="M11 7h2"></path>
+    <path d="M9.5 9.5A4.5 4.5 0 0 1 18 11a4 4 0 1 1 0 8H8a4 4 0 0 1 1.5-7.7"></path>
+  </symbol>
+  <symbol id="icon-sliders" viewBox="0 0 24 24">
+    <line x1="4" y1="21" x2="4" y2="14"></line>
+    <line x1="4" y1="10" x2="4" y2="3"></line>
+    <line x1="12" y1="21" x2="12" y2="12"></line>
+    <line x1="12" y1="8" x2="12" y2="3"></line>
+    <line x1="20" y1="21" x2="20" y2="16"></line>
+    <line x1="20" y1="12" x2="20" y2="3"></line>
+    <line x1="2" y1="14" x2="6" y2="14"></line>
+    <line x1="10" y1="8" x2="14" y2="8"></line>
+    <line x1="18" y1="16" x2="22" y2="16"></line>
+    <circle cx="4" cy="14" r="2"></circle>
+    <circle cx="12" cy="8" r="2"></circle>
+    <circle cx="20" cy="16" r="2"></circle>
+  </symbol>
+  <symbol id="icon-mail" viewBox="0 0 24 24">
+    <path d="M4 5h16a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2z"></path>
+    <path d="m22 7-10 7L2 7"></path>
+  </symbol>
+  <symbol id="icon-file" viewBox="0 0 24 24">
+    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+    <path d="M14 2v6h6"></path>
+    <path d="M10 12h4"></path>
+    <path d="M10 16h4"></path>
+  </symbol>
+  <symbol id="icon-clipboard" viewBox="0 0 24 24">
+    <path d="M9 5H7a2 2 0 0 0-2 2v11a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"></path>
+    <rect x="9" y="3" width="6" height="4" rx="1"></rect>
+  </symbol>
+  <symbol id="icon-news" viewBox="0 0 24 24">
+    <path d="M4 5h14a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2z"></path>
+    <path d="M4 11h16"></path>
+    <path d="M12 7v14"></path>
+    <path d="M6 15h4"></path>
+    <path d="M6 19h4"></path>
+    <path d="M14 15h4"></path>
+  </symbol>
+</svg>
+
+<!-- SIDEBAR -->
+<aside class="sidebar">
+  <div class="sb-logo">
+    <div class="sb-logo-row">
+      <div class="sb-icon"><svg class="icon lg"><use href="#icon-openclaw"></use></svg></div>
+      <div>
+        <div class="sb-title">OpenClaw Guide</div>
+        <div class="sb-subtitle">v2026 · Complete Setup</div>
+      </div>
+    </div>
+    <div class="sb-progress"><div class="sb-progress-fill" id="pFill"></div></div>
+    <div class="sb-progress-label"><span>Progress</span><span id="pLabel">0%</span></div>
+  </div>
+  <nav class="sb-nav">
+    <div class="sb-section">
+      <div class="sb-section-title">Overview</div>
+      <a href="#intro" class="sb-link active"><span class="sb-num">★</span>What is OpenClaw?</a>
+      <a href="#arch" class="sb-link"><span class="sb-num">~</span>Architecture</a>
+      <a href="#requirements" class="sb-link"><span class="sb-num">~</span>Requirements</a>
+    </div>
+    <div class="sb-section">
+      <div class="sb-section-title">Local Setup</div>
+      <a href="#s1" class="sb-link"><span class="sb-num">1</span>Clone & Install</a>
+      <a href="#s2" class="sb-link"><span class="sb-num">2</span>Configure</a>
+      <a href="#s3" class="sb-link"><span class="sb-num">3</span>Run Locally</a>
+    </div>
+    <div class="sb-section">
+      <div class="sb-section-title">VPS Deployment</div>
+      <a href="#s4" class="sb-link"><span class="sb-num">4</span>Get a VPS</a>
+      <a href="#s5" class="sb-link"><span class="sb-num">5</span>SSH & User</a>
+      <a href="#s6" class="sb-link"><span class="sb-num">6</span>Install on VPS</a>
+      <a href="#s7" class="sb-link"><span class="sb-num">7</span>Configure VPS</a>
+    </div>
+    <div class="sb-section">
+      <div class="sb-section-title">Domain & Proxy</div>
+      <a href="#s8" class="sb-link"><span class="sb-num">8</span>DNS Setup</a>
+      <a href="#s9" class="sb-link"><span class="sb-num">9</span>Install Caddy</a>
+    </div>
+    <div class="sb-section">
+      <div class="sb-section-title">Go Live</div>
+      <a href="#s10" class="sb-link"><span class="sb-num">10</span>Start Gateway</a>
+      <a href="#s11" class="sb-link"><span class="sb-num">11</span>Pair Dashboard</a>
+      <a href="#s12" class="sb-link"><span class="sb-num">12</span>Connect Telegram</a>
+      <a href="#s13" class="sb-link"><span class="sb-num">13</span>Survive Reboots</a>
+    </div>
+    <div class="sb-section">
+      <div class="sb-section-title">Automation</div>
+      <a href="#linkedin" class="sb-link"><span class="sb-num">✦</span>LinkedIn Posting</a>
+      <a href="#skills" class="sb-link"><span class="sb-num">✦</span>Skills to Install</a>
+      <a href="#boot" class="sb-link"><span class="sb-num">✦</span>BOOT.md Setup</a>
+      <a href="#possibilities" class="sb-link"><span class="sb-num">✦</span>All Possibilities</a>
+      <a href="#troubleshoot" class="sb-link"><span class="sb-num">?</span>Troubleshooting</a>
+    </div>
+  </nav>
+</aside>
+
+<!-- MAIN -->
+<main class="main">
+
+<!-- HERO -->
+<section class="hero" id="intro">
+  <div class="hero-tag"><span class="hero-tag-dot"></span>Complete · Production Ready · 2026</div>
+  <h1>The Complete<br><em>OpenClaw</em> Guide</h1>
+  <p class="hero-lead">From zero to a fully automated Telegram bot that posts to LinkedIn, fills forms, and runs 24/7 on your own VPS. Local setup + VPS deployment + real automation.</p>
+
+  <div class="hero-pills">
+    <div class="pill"><span class="pill-dot" style="background:#1a7f4b"></span>Local Setup</div>
+    <div class="pill"><span class="pill-dot" style="background:#1a5fa8"></span>VPS Deployment</div>
+    <div class="pill"><span class="pill-dot" style="background:#e85d00"></span>Telegram Bot</div>
+    <div class="pill"><span class="pill-dot" style="background:#1a7f4b"></span>LinkedIn Auto-Post</div>
+    <div class="pill"><span class="pill-dot" style="background:#a05c00"></span>Error → Fix Patterns</div>
+    <div class="pill"><span class="pill-dot" style="background:#1a5fa8"></span>postmypost.io API</div>
+  </div>
+
+  <div class="hero-stats">
+    <div class="stat"><span class="stat-n">13</span><span class="stat-l">Steps</span></div>
+    <div class="stat"><span class="stat-n">~45m</span><span class="stat-l">Setup Time</span></div>
+    <div class="stat"><span class="stat-n">24/7</span><span class="stat-l">Always On</span></div>
+    <div class="stat"><span class="stat-n">∞</span><span class="stat-l">Automations</span></div>
+  </div>
+</section>
+
+<div class="content">
+
+<!-- WHAT IS -->
+<div class="section" id="arch">
+  <div class="sec-tag"><div class="sec-n muted">~</div></div>
+  <div class="sec-h">What is OpenClaw?</div>
+  <div class="sec-sub">A self-hosted AI gateway that turns Telegram into your personal automation control center.</div>
+
+  <p style="margin-top:16px;"><strong>OpenClaw</strong> lets you run an AI agent on your own server. You talk to it via Telegram, it connects to Claude AI, and can automate anything — posting to LinkedIn, filling forms, scheduling content, web browsing, and more. <strong>You own everything.</strong> No subscriptions, no limits.</p>
+
+  <div class="arch" style="margin-top:20px;">
+    <div class="arch-flow">
+      <div class="arch-node"><div class="arch-node-icon"><svg class="icon"><use href="#icon-phone"></use></svg></div><div class="arch-node-name">Telegram</div><div class="arch-node-sub">Your phone</div></div>
+      <div class="arch-arr">→</div>
+      <div class="arch-node"><div class="arch-node-icon"><svg class="icon"><use href="#icon-globe"></use></svg></div><div class="arch-node-name">Your Domain</div><div class="arch-node-sub">openclaw.you.xyz</div></div>
+      <div class="arch-arr">→</div>
+      <div class="arch-node"><div class="arch-node-icon"><svg class="icon"><use href="#icon-switch"></use></svg></div><div class="arch-node-name">Caddy</div><div class="arch-node-sub">HTTPS proxy</div></div>
+      <div class="arch-arr">→</div>
+      <div class="arch-node"><div class="arch-node-icon"><svg class="icon"><use href="#icon-openclaw"></use></svg></div><div class="arch-node-name">OpenClaw</div><div class="arch-node-sub">:18789</div></div>
+      <div class="arch-arr">→</div>
+      <div class="arch-node"><div class="arch-node-icon"><svg class="icon"><use href="#icon-robot"></use></svg></div><div class="arch-node-name">Claude AI</div><div class="arch-node-sub">Your API key</div></div>
+      <div class="arch-arr">→</div>
+      <div class="arch-node"><div class="arch-node-icon"><svg class="icon"><use href="#icon-megaphone"></use></svg></div><div class="arch-node-name">LinkedIn</div><div class="arch-node-sub">via postmypost</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- REQUIREMENTS -->
+<div class="section" id="requirements">
+  <div class="sec-tag"><div class="sec-n muted">~</div></div>
+  <div class="sec-h">Requirements</div>
+  <table style="margin-top:16px;">
+    <thead><tr><th>Item</th><th>Details</th><th>Where</th><th>Status</th></tr></thead>
+    <tbody>
+      <tr><td><strong>VPS</strong></td><td>Ubuntu 24.04, min 2GB RAM</td><td>Hetzner CX22 — €3.79/mo</td><td><span class="badge by">Required</span></td></tr>
+      <tr><td><strong>Domain</strong></td><td>Any subdomain pointing to VPS</td><td>Namecheap / Porkbun</td><td><span class="badge by">Required</span></td></tr>
+      <tr><td><strong>Anthropic API Key</strong></td><td>Powers Claude AI brain</td><td>console.anthropic.com</td><td><span class="badge by">Required</span></td></tr>
+      <tr><td><strong>Telegram Bot Token</strong></td><td>From @BotFather</td><td>t.me/BotFather</td><td><span class="badge by">Required</span></td></tr>
+      <tr><td><strong>postmypost.io Account</strong></td><td>For social media posting API</td><td>postmypost.io</td><td><span class="badge bo">For Automation</span></td></tr>
+      <tr><td><strong>Node.js 20+</strong></td><td>Runtime for OpenClaw</td><td>Auto-installed in Step 6</td><td><span class="badge bb">Auto</span></td></tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- LOCAL SETUP -->
+<div class="sec-divider"><div class="sec-divider-line"></div><div class="sec-divider-label">Local Setup — Test Before Deploying</div><div class="sec-divider-line"></div></div>
+
+<div class="section" id="s1">
+  <div class="sec-tag"><div class="sec-n">1</div></div>
+  <div class="sec-h">Clone & Install</div>
+  <div class="sec-sub">Get OpenClaw running on your local machine first before touching the VPS.</div>
+
+  <h3>Check Node.js version</h3>
+  <div class="code-wrap"><div class="code-bar"><div class="code-bar-left"><div class="dots"><span class="d1"></span><span class="d2"></span><span class="d3"></span></div><span class="code-label">local terminal</span></div><button class="copy-btn" onclick="cp(this)">copy</button></div><div class="code-body"><pre><span class="ck">node</span> --version   <span class="cm"># needs v20+</span>
+<span class="ck">npm</span> --version</pre></div></div>
+  <div class="result fail"><div class="result-head"><span class="dot"></span><svg class="icon sm"><use href="#icon-x"></use></svg><span>Node not found or &lt; v20</span></div><div class="result-body">curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.0/install.sh | bash<br>nvm install 20 && nvm use 20</div></div>
+
+  <h3>Clone & install</h3>
+  <div class="code-wrap"><div class="code-bar"><div class="code-bar-left"><div class="dots"><span class="d1"></span><span class="d2"></span><span class="d3"></span></div><span class="code-label">terminal</span></div><button class="copy-btn" onclick="cp(this)">copy</button></div><div class="code-body"><pre><span class="ck">git</span> clone https://github.com/openclaw/openclaw.git ~/openclaw
+<span class="ck">cd</span> ~/openclaw
+<span class="ck">npm</span> install</pre></div></div>
+  <div class="result succ"><div class="result-head"><span class="dot"></span><svg class="icon sm"><use href="#icon-check"></use></svg><span>Success</span></div><div class="result-body">added 847 packages in 23s<br>found 0 vulnerabilities</div></div>
+</div>
+
+<hr class="divider">
+
+<div class="section" id="s2">
+  <div class="sec-tag"><div class="sec-n">2</div></div>
+  <div class="sec-h">Configure</div>
+  <div class="sec-sub">Run the wizard to set API keys, Telegram token, and port.</div>
+
+  <div class="code-wrap"><div class="code-bar"><div class="code-bar-left"><div class="dots"><span class="d1"></span><span class="d2"></span><span class="d3"></span></div><span class="code-label">~/openclaw</span></div><button class="copy-btn" onclick="cp(this)">copy</button></div><div class="code-body"><pre><span class="ck">node</span> openclaw.mjs configure</pre></div></div>
+
+  <div class="callout warn"><div class="callout-icon"><svg class="icon sm"><use href="#icon-warning"></use></svg></div><div class="callout-body"><div class="callout-title">Remove the "bind" field after wizard</div><div class="callout-text">The wizard writes <code>"bind": "0.0.0.0"</code> which crashes the gateway. Open <code>~/.openclaw/openclaw.json</code> and delete the <code>"bind"</code> line from the gateway section.</div></div></div>
+
+  <div class="code-wrap"><div class="code-bar"><div class="code-bar-left"><div class="dots"><span class="d1"></span><span class="d2"></span><span class="d3"></span></div><span class="code-label">fix config</span></div><button class="copy-btn" onclick="cp(this)">copy</button></div><div class="code-body"><pre><span class="ck">nano</span> ~/.openclaw/openclaw.json
+<span class="cm"># Delete this line from "gateway" section:</span>
+<span class="ce">"bind": "0.0.0.0",   ← DELETE</span>
+<span class="cm"># Ctrl+X → Y → Enter to save</span></pre></div></div>
+</div>
+
+<hr class="divider">
+
+<div class="section" id="s3">
+  <div class="sec-tag"><div class="sec-n">3</div></div>
+  <div class="sec-h">Run Locally</div>
+  <div class="sec-sub">Start the gateway and test Telegram replies before deploying.</div>
+
+  <div class="code-wrap"><div class="code-bar"><div class="code-bar-left"><div class="dots"><span class="d1"></span><span class="d2"></span><span class="d3"></span></div><span class="code-label">~/openclaw</span></div><button class="copy-btn" onclick="cp(this)">copy</button></div><div class="code-body"><pre><span class="ck">node</span> openclaw.mjs gateway start</pre></div></div>
+  <div class="result succ"><div class="result-head"><span class="dot"></span><svg class="icon sm"><use href="#icon-check"></use></svg><span>Running</span></div><div class="result-body">OpenClaw Gateway running on ws://127.0.0.1:18789<br>Telegram channel: connected</div></div>
+  <div class="result fail"><div class="result-head"><span class="dot"></span><svg class="icon sm"><use href="#icon-x"></use></svg><span>"Invalid config: gateway.bind"</span></div><div class="result-body">Remove the "bind" line from ~/.openclaw/openclaw.json (see Step 2)</div></div>
+</div>
+
+<!-- VPS -->
+<div class="sec-divider"><div class="sec-divider-line"></div><div class="sec-divider-label">VPS Deployment — 24/7 Production</div><div class="sec-divider-line"></div></div>
+
+<div class="section" id="s4">
+  <div class="sec-tag"><div class="sec-n">4</div></div>
+  <div class="sec-h">Get a VPS</div>
+  <table style="margin-top:16px;">
+    <thead><tr><th>Provider</th><th>Plan</th><th>Specs</th><th>Price</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Hetzner</strong></td><td>CX22</td><td>2 vCPU, 4GB RAM</td><td><span class="badge bg">€3.79/mo Best</span></td></tr>
+      <tr><td><strong>DigitalOcean</strong></td><td>Basic</td><td>1 vCPU, 2GB RAM</td><td>$12/mo</td></tr>
+      <tr><td><strong>Vultr</strong></td><td>Cloud</td><td>1 vCPU, 2GB RAM</td><td>$12/mo</td></tr>
+    </tbody>
+  </table>
+  <div class="callout tip"><div class="callout-icon"><svg class="icon sm"><use href="#icon-lightbulb"></use></svg></div><div class="callout-body"><div class="callout-title">Always choose Ubuntu 24.04 LTS</div><div class="callout-text">Note your public IP after creation — you'll use it for DNS.</div></div></div>
+</div>
+
+<hr class="divider">
+
+<div class="section" id="s5">
+  <div class="sec-tag"><div class="sec-n">5</div></div>
+  <div class="sec-h">SSH & Create User</div>
+
+  <div class="code-wrap"><div class="code-bar"><div class="code-bar-left"><div class="dots"><span class="d1"></span><span class="d2"></span><span class="d3"></span></div><span class="code-label">local terminal</span></div><button class="copy-btn" onclick="cp(this)">copy</button></div><div class="code-body"><pre><span class="ck">ssh</span> root@YOUR_VPS_IP
+<span class="ck">adduser</span> openclaw
+<span class="ck">usermod</span> <span class="cv">-aG</span> sudo openclaw
+<span class="ck">rsync</span> <span class="cv">--archive --chown</span>=openclaw:openclaw ~/.ssh /home/openclaw</pre></div></div>
+  <div class="result succ"><div class="result-head"><span class="dot"></span><svg class="icon sm"><use href="#icon-check"></use></svg><span>Then SSH as the new user</span></div><div class="result-body">ssh openclaw@YOUR_VPS_IP</div></div>
+</div>
+
+<hr class="divider">
+
+<div class="section" id="s6">
+  <div class="sec-tag"><div class="sec-n">6</div></div>
+  <div class="sec-h">Install on VPS</div>
+
+  <div class="code-wrap"><div class="code-bar"><div class="code-bar-left"><div class="dots"><span class="d1"></span><span class="d2"></span><span class="d3"></span></div><span class="code-label">VPS terminal</span></div><button class="copy-btn" onclick="cp(this)">copy</button></div><div class="code-body"><pre><span class="cm"># Update & install Node.js 20</span>
+<span class="ck">sudo</span> apt update && sudo apt upgrade -y
+<span class="ck">curl</span> -fsSL https://deb.nodesource.com/setup_20.x | sudo bash -
+<span class="ck">sudo</span> apt-get install -y nodejs git
+
+<span class="cm"># Clone OpenClaw</span>
+<span class="ck">git</span> clone https://github.com/openclaw/openclaw.git ~/openclaw
+<span class="ck">cd</span> ~/openclaw && npm install</pre></div></div>
+</div>
+
+<hr class="divider">
+
+<div class="section" id="s7">
+  <div class="sec-tag"><div class="sec-n">7</div></div>
+  <div class="sec-h">Configure on VPS</div>
+
+  <div class="code-wrap"><div class="code-bar"><div class="code-bar-left"><div class="dots"><span class="d1"></span><span class="d2"></span><span class="d3"></span></div><span class="code-label">VPS terminal</span></div><button class="copy-btn" onclick="cp(this)">copy</button></div><div class="code-body"><pre><span class="ck">node</span> openclaw.mjs configure
+<span class="ck">node</span> openclaw.mjs doctor --fix
+<span class="ck">nano</span> ~/.openclaw/openclaw.json  <span class="cm"># remove "bind" line!</span></pre></div></div>
+</div>
+
+<!-- DOMAIN -->
+<div class="sec-divider"><div class="sec-divider-line"></div><div class="sec-divider-label">Domain & Reverse Proxy</div><div class="sec-divider-line"></div></div>
+
+<div class="section" id="s8">
+  <div class="sec-tag"><div class="sec-n">8</div></div>
+  <div class="sec-h">DNS Setup</div>
+  <p>Add an <strong>A record</strong> at your domain registrar:</p>
+  <table>
+    <thead><tr><th>Type</th><th>Host</th><th>Value</th><th>TTL</th></tr></thead>
+    <tbody><tr><td><span class="badge bg">A</span></td><td><code>openclaw</code></td><td>Your VPS IP</td><td>300</td></tr></tbody>
+  </table>
+  <div class="code-wrap"><div class="code-bar"><div class="code-bar-left"><div class="dots"><span class="d1"></span><span class="d2"></span><span class="d3"></span></div><span class="code-label">verify DNS</span></div><button class="copy-btn" onclick="cp(this)">copy</button></div><div class="code-body"><pre><span class="ck">dig</span> openclaw.yourdomain.xyz +short
+<span class="cm"># Should return your VPS IP</span></pre></div></div>
+</div>
+
+<hr class="divider">
+
+<div class="section" id="s9">
+  <div class="sec-tag"><div class="sec-n">9</div></div>
+  <div class="sec-h">Install Caddy</div>
+  <div class="sec-sub">Auto HTTPS — no certbot needed.</div>
+
+  <div class="code-wrap"><div class="code-bar"><div class="code-bar-left"><div class="dots"><span class="d1"></span><span class="d2"></span><span class="d3"></span></div><span class="code-label">VPS terminal</span></div><button class="copy-btn" onclick="cp(this)">copy</button></div><div class="code-body"><pre><span class="ck">sudo</span> apt install -y debian-keyring debian-archive-keyring apt-transport-https curl
+<span class="ck">curl</span> -1sLf 'https://dl.cloudsmith.io/public/caddy/stable/gpg.key' \
+  | sudo gpg --dearmor -o /usr/share/keyrings/caddy-stable-archive-keyring.gpg
+<span class="ck">curl</span> -1sLf 'https://dl.cloudsmith.io/public/caddy/stable/debian.deb.txt' \
+  | sudo tee /etc/apt/sources.list.d/caddy-stable.list
+<span class="ck">sudo</span> apt update && sudo apt install -y caddy</pre></div></div>
+
+  <h3>Caddyfile config</h3>
+  <div class="code-wrap"><div class="code-bar"><div class="code-bar-left"><div class="dots"><span class="d1"></span><span class="d2"></span><span class="d3"></span></div><span class="code-label">/etc/caddy/Caddyfile</span></div><button class="copy-btn" onclick="cp(this)">copy</button></div><div class="code-body"><pre><span class="cs">openclaw.yourdomain.xyz</span> {
+    reverse_proxy localhost:<span class="cv">18789</span> {
+        header_up Host {host}
+        header_up X-Real-IP {remote}
+        header_up Upgrade {http.request.header.Upgrade}
+        header_up Connection {http.request.header.Connection}
+    }
+}</pre></div></div>
+
+  <div class="code-wrap"><div class="code-bar"><div class="code-bar-left"><div class="dots"><span class="d1"></span><span class="d2"></span><span class="d3"></span></div><span class="code-label">start caddy</span></div><button class="copy-btn" onclick="cp(this)">copy</button></div><div class="code-body"><pre><span class="ck">sudo</span> systemctl enable caddy && sudo systemctl start caddy</pre></div></div>
+
+  <div class="result fail"><div class="result-head"><span class="dot"></span><svg class="icon sm"><use href="#icon-x"></use></svg><span>"Address already in use :80 or :443"</span></div><div class="result-body">sudo systemctl stop nginx && sudo systemctl disable nginx<br>sudo systemctl start caddy</div></div>
+</div>
+
+<!-- GO LIVE -->
+<div class="sec-divider"><div class="sec-divider-line"></div><div class="sec-divider-label">Go Live</div><div class="sec-divider-line"></div></div>
+
+<div class="section" id="s10">
+  <div class="sec-tag"><div class="sec-n">10</div></div>
+  <div class="sec-h">Start Gateway</div>
+
+  <div class="code-wrap"><div class="code-bar"><div class="code-bar-left"><div class="dots"><span class="d1"></span><span class="d2"></span><span class="d3"></span></div><span class="code-label">VPS terminal</span></div><button class="copy-btn" onclick="cp(this)">copy</button></div><div class="code-body"><pre><span class="ck">systemctl</span> --user enable openclaw-gateway.service
+<span class="ck">systemctl</span> --user start openclaw-gateway.service
+<span class="ck">systemctl</span> --user status openclaw-gateway.service</pre></div></div>
+
+  <div class="result succ"><div class="result-head"><span class="dot"></span><svg class="icon sm"><use href="#icon-check"></use></svg><span>Active</span></div><div class="result-body">Active: active (running) since ...</div></div>
+  <div class="result fail"><div class="result-head"><span class="dot"></span><svg class="icon sm"><use href="#icon-x"></use></svg><span>exit-code / crash</span></div><div class="result-body">journalctl --user -u openclaw-gateway.service -n 30 --no-pager<br>Most likely: "gateway.bind" still in config → remove it</div></div>
+</div>
+
+<hr class="divider">
+
+<div class="section" id="s11">
+  <div class="sec-tag"><div class="sec-n">11</div></div>
+  <div class="sec-h">Pair Dashboard</div>
+
+  <div class="steps">
+    <div class="step"><div class="step-dot on">1</div><div class="step-c"><div class="step-title">Get your gateway token</div><div class="step-desc"><code>cat ~/.openclaw/openclaw.json | grep -A2 '"auth"'</code></div></div></div>
+    <div class="step"><div class="step-dot on">2</div><div class="step-c"><div class="step-title">Open dashboard</div><div class="step-desc">Visit <code>https://openclaw.yourdomain.xyz/overview</code></div></div></div>
+    <div class="step"><div class="step-dot on">3</div><div class="step-c"><div class="step-title">Set WebSocket URL + Token</div><div class="step-desc">WebSocket URL: <code>wss://openclaw.yourdomain.xyz</code><br>Gateway Token: paste from step 1 → click Connect</div></div></div>
+    <div class="step"><div class="step-dot on">4</div><div class="step-c"><div class="step-title">Approve pairing on VPS</div><div class="step-desc"><code>node openclaw.mjs devices list</code><br><code>node openclaw.mjs devices approve &lt;ID&gt;</code></div></div></div>
+    <div class="step"><div class="step-dot ok">✓</div><div class="step-c"><div class="step-title">Dashboard shows Health Online <span class="status-dot ok"></span></div></div></div>
+  </div>
+</div>
+
+<hr class="divider">
+
+<div class="section" id="s12">
+  <div class="sec-tag"><div class="sec-n">12</div></div>
+  <div class="sec-h">Connect Telegram</div>
+
+  <div class="code-wrap"><div class="code-bar"><div class="code-bar-left"><div class="dots"><span class="d1"></span><span class="d2"></span><span class="d3"></span></div><span class="code-label">VPS terminal</span></div><button class="copy-btn" onclick="cp(this)">copy</button></div><div class="code-body"><pre><span class="ck">node</span> openclaw.mjs configure   <span class="cm"># add Telegram bot token</span>
+<span class="ck">systemctl</span> --user restart openclaw-gateway.service</pre></div></div>
+  <div class="callout ok"><div class="callout-icon"><svg class="icon sm"><use href="#icon-check"></use></svg></div><div class="callout-body"><div class="callout-title">Test it</div><div class="callout-text">Send a message to your Telegram bot. If it replies — you're live!</div></div></div>
+</div>
+
+<hr class="divider">
+
+<div class="section" id="s13">
+  <div class="sec-tag"><div class="sec-n">13</div></div>
+  <div class="sec-h">Survive Reboots</div>
+
+  <div class="code-wrap"><div class="code-bar"><div class="code-bar-left"><div class="dots"><span class="d1"></span><span class="d2"></span><span class="d3"></span></div><span class="code-label">VPS terminal</span></div><button class="copy-btn" onclick="cp(this)">copy</button></div><div class="code-body"><pre><span class="ck">loginctl</span> enable-linger openclaw
+<span class="cm"># Now OpenClaw starts automatically on every reboot</span></pre></div></div>
+</div>
+
+<!-- AUTOMATION -->
+<div class="sec-divider"><div class="sec-divider-line"></div><div class="sec-divider-label">Automation — LinkedIn + Social Posting</div><div class="sec-divider-line"></div></div>
+
+<div class="section" id="linkedin">
+  <div class="sec-tag"><div class="sec-n" style="background:var(--orange)">✦</div></div>
+  <div class="sec-h">LinkedIn Auto-Posting</div>
+  <div class="sec-sub">Post to LinkedIn from Telegram using postmypost.io API. Tested and working.</div>
+
+  <h3>Step 1 — Get your postmypost.io credentials</h3>
+  <div class="steps">
+    <div class="step"><div class="step-dot ok">1</div><div class="step-c"><div class="step-title">Sign up at postmypost.io</div><div class="step-desc">Create account → connect your LinkedIn account</div></div></div>
+    <div class="step"><div class="step-dot ok">2</div><div class="step-c"><div class="step-title">Get your API token</div><div class="step-desc">Settings → API → Generate Access Token. Save it securely — you only see it once!</div></div></div>
+    <div class="step"><div class="step-dot ok">3</div><div class="step-c"><div class="step-title">Get your Project ID</div><div class="step-desc"><code>curl -L 'https://api.postmypost.io/v4.1/projects' -H 'Authorization: Bearer YOUR_TOKEN'</code><br>Note the <code>id</code> value from response.</div></div></div>
+    <div class="step"><div class="step-dot ok">4</div><div class="step-c"><div class="step-title">Get your LinkedIn Account ID</div><div class="step-desc"><code>curl -L 'https://api.postmypost.io/v4.1/accounts?project_id=YOUR_PROJECT_ID' -H 'Authorization: Bearer YOUR_TOKEN'</code><br>Note the <code>id</code> value — this is your LinkedIn account ID.</div></div></div>
+  </div>
+
+  <h3>Step 2 — Create the posting script on VPS</h3>
+  <div class="code-wrap"><div class="code-bar"><div class="code-bar-left"><div class="dots"><span class="d1"></span><span class="d2"></span><span class="d3"></span></div><span class="code-label">VPS terminal</span></div><button class="copy-btn" onclick="cp(this)">copy</button></div><div class="code-body"><pre><span class="ck">mkdir</span> -p ~/openclaw/scripts
+<span class="ck">nano</span> ~/openclaw/scripts/post-linkedin.sh</pre></div></div>
+
+  <p>Paste this (replace the token and IDs with yours):</p>
+
+  <div class="code-wrap"><div class="code-bar"><div class="code-bar-left"><div class="dots"><span class="d1"></span><span class="d2"></span><span class="d3"></span></div><span class="code-label">post-linkedin.sh</span></div><button class="copy-btn" onclick="cp(this)">copy</button></div><div class="code-body"><pre><span class="cm">#!/bin/bash</span>
+<span class="cv">TOKEN</span>=<span class="cs">"YOUR_POSTMYPOST_TOKEN"</span>
+<span class="cv">ACCOUNT_ID</span>=<span class="cs">2086922</span>       <span class="cm"># your LinkedIn account ID</span>
+<span class="cv">PROJECT_ID</span>=<span class="cs">331570</span>        <span class="cm"># your project ID</span>
+<span class="cv">POST_AT</span>=$(date -u -d <span class="cs">'+5 minutes'</span> <span class="cs">'+%Y-%m-%dT%H:%M:%S+00:00'</span>)
+<span class="cv">TEXT</span>=<span class="cs">"$1"</span>
+
+<span class="ck">curl</span> -s -X POST <span class="cs">'https://api.postmypost.io/v4.1/publications'</span> \
+-H <span class="cs">'Content-Type: application/json'</span> \
+-H <span class="cs">'Accept: application/json'</span> \
+-H <span class="cs">"Authorization: Bearer $TOKEN"</span> \
+-d <span class="cs">"{
+  \"project_id\": $PROJECT_ID,
+  \"account_ids\": [$ACCOUNT_ID],
+  \"publication_status\": 5,
+  \"post_at\": \"$POST_AT\",
+  \"details\": [{
+    \"publication_type\": 1,
+    \"content\": \"$TEXT\"
+  }]
+}"</span></pre></div></div>
+
+  <div class="code-wrap"><div class="code-bar"><div class="code-bar-left"><div class="dots"><span class="d1"></span><span class="d2"></span><span class="d3"></span></div><span class="code-label">make executable & test</span></div><button class="copy-btn" onclick="cp(this)">copy</button></div><div class="code-body"><pre><span class="ck">chmod</span> +x ~/openclaw/scripts/post-linkedin.sh
+
+<span class="cm"># Test it</span>
+<span class="ck">bash</span> ~/openclaw/scripts/post-linkedin.sh <span class="cs">"Your first automated post #buildinpublic"</span></pre></div></div>
+
+  <div class="result succ"><div class="result-head"><span class="dot"></span><svg class="icon sm"><use href="#icon-check"></use></svg><span>Success response</span></div><div class="result-body">{"id":28477006,"publication_status":5,"post_at":"...","details":[...]}</div></div>
+
+  <div class="callout tip"><div class="callout-icon"><svg class="icon sm"><use href="#icon-lightbulb"></use></svg></div><div class="callout-body"><div class="callout-title">publication_status values</div><div class="callout-text"><code>4</code> = Draft · <code>5</code> = Pending/Scheduled <svg class="icon sm"><use href="#icon-check"></use></svg> · <code>1</code> = Published · <code>3</code> = Error</div></div></div>
+
+  <h3>Step 3 — Set up BOOT.md so Telegram triggers posts</h3>
+  <div class="code-wrap"><div class="code-bar"><div class="code-bar-left"><div class="dots"><span class="d1"></span><span class="d2"></span><span class="d3"></span></div><span class="code-label">VPS terminal</span></div><button class="copy-btn" onclick="cp(this)">copy</button></div><div class="code-body"><pre><span class="ck">mkdir</span> -p ~/openclaw/workspace
+<span class="ck">nano</span> ~/openclaw/workspace/BOOT.md</pre></div></div>
+
+  <p>Paste this inside:</p>
+
+  <div class="code-wrap"><div class="code-bar"><div class="code-bar-left"><div class="dots"><span class="d1"></span><span class="d2"></span><span class="d3"></span></div><span class="code-label">BOOT.md</span></div><button class="copy-btn" onclick="cp(this)">copy</button></div><div class="code-body"><pre><span class="cm"># LinkedIn Automation Instructions</span>
+
+<span class="cs">When the user says anything like:
+- "post this on LinkedIn"
+- "share on LinkedIn"  
+- "post to LinkedIn: [content]"
+
+Do exactly this:
+1. Extract the post content from their message
+2. Run: bash ~/openclaw/scripts/post-linkedin.sh "[extracted content]"
+3. Reply: "Posted to LinkedIn! Will go live in ~5 minutes."
+
+If the user says "run this command: bash ~/openclaw/scripts/post-linkedin.sh [text]"
+Just run that exact command directly.</span></pre></div></div>
+
+  <div class="code-wrap"><div class="code-bar"><div class="code-bar-left"><div class="dots"><span class="d1"></span><span class="d2"></span><span class="d3"></span></div><span class="code-label">restart gateway</span></div><button class="copy-btn" onclick="cp(this)">copy</button></div><div class="code-body"><pre><span class="ck">systemctl</span> --user restart openclaw-gateway.service</pre></div></div>
+
+  <div class="callout ok"><div class="callout-icon"><svg class="icon sm"><use href="#icon-sparkles"></use></svg></div><div class="callout-body"><div class="callout-title">Now test on Telegram!</div><div class="callout-text">Message your bot: <strong>"Post this on LinkedIn: Just automated my social media with AI #buildinpublic"</strong></div></div></div>
+</div>
+
+<!-- SKILLS -->
+<div class="sec-divider"><div class="sec-divider-line"></div><div class="sec-divider-label">Skills to Install for Full Automation</div><div class="sec-divider-line"></div></div>
+
+<div class="section" id="skills">
+  <div class="sec-tag"><div class="sec-n" style="background:var(--orange)">✦</div></div>
+  <div class="sec-h">Skills to Install</div>
+  <div class="sec-sub">These skills are available via clawhub. Check them with <code>npx clawhub inspect &lt;name&gt;</code> before installing.</div>
+
+  <div class="callout warn"><div class="callout-icon"><svg class="icon sm"><use href="#icon-warning"></use></svg></div><div class="callout-body"><div class="callout-title">VirusTotal Warning on clawhub skills</div><div class="callout-text">Many clawhub skills get flagged by VirusTotal. Always run <code>npx clawhub inspect &lt;name&gt;</code> first and review the code. When in doubt, skip and use built-in browser automation instead.</div></div></div>
+
+  <div class="skill-grid">
+    <div class="skill-card">
+      <div class="skill-badge"><span class="badge bg"><svg class="icon sm"><use href="#icon-check"></use></svg>Built-in</span></div>
+      <div class="skill-card-top"><div class="skill-card-icon"><svg class="icon"><use href="#icon-globe"></use></svg></div><div class="skill-card-name">browser</div></div>
+      <div class="skill-card-desc">Full browser automation — navigate, fill forms, click, screenshot, take PDFs. Already installed and ready. Use for press release form filling.</div>
+      <code class="skill-card-cmd">node openclaw.mjs browser --help</code>
+    </div>
+    <div class="skill-card">
+      <div class="skill-badge"><span class="badge bg"><svg class="icon sm"><use href="#icon-check"></use></svg>Built-in</span></div>
+      <div class="skill-card-top"><div class="skill-card-icon"><svg class="icon"><use href="#icon-cloud-sun"></use></svg></div><div class="skill-card-name">weather</div></div>
+      <div class="skill-card-desc">Get weather and forecasts without any API key. Ready to use out of the box.</div>
+      <code class="skill-card-cmd">node openclaw.mjs skills list</code>
+    </div>
+    <div class="skill-card">
+      <div class="skill-badge"><span class="badge by">Install</span></div>
+      <div class="skill-card-top"><div class="skill-card-icon"><svg class="icon"><use href="#icon-note"></use></svg></div><div class="skill-card-name">notion</div></div>
+      <div class="skill-card-desc">Read client SOPs from Notion. Create, search and manage Notion pages — great for reading Will's SOP document automatically.</div>
+      <code class="skill-card-cmd">npx clawhub inspect notion</code>
+    </div>
+    <div class="skill-card">
+      <div class="skill-badge"><span class="badge by">Install</span></div>
+      <div class="skill-card-top"><div class="skill-card-icon"><svg class="icon"><use href="#icon-sliders"></use></svg></div><div class="skill-card-name">gog</div></div>
+      <div class="skill-card-desc">Google Workspace CLI — Gmail, Calendar, Drive, Docs, Sheets. Read client SOPs from Google Docs automatically.</div>
+      <code class="skill-card-cmd">npx clawhub inspect gog</code>
+    </div>
+    <div class="skill-card">
+      <div class="skill-badge"><span class="badge by">Install</span></div>
+      <div class="skill-card-top"><div class="skill-card-icon"><svg class="icon"><use href="#icon-news"></use></svg></div><div class="skill-card-name">blogwatcher</div></div>
+      <div class="skill-card-desc">Monitor RSS/Atom feeds for updates. Auto-generate social posts from new blog content or news.</div>
+      <code class="skill-card-cmd">npx clawhub inspect blogwatcher</code>
+    </div>
+    <div class="skill-card">
+      <div class="skill-badge"><span class="badge by">Install</span></div>
+      <div class="skill-card-top"><div class="skill-card-icon"><svg class="icon"><use href="#icon-file"></use></svg></div><div class="skill-card-name">nano-pdf</div></div>
+      <div class="skill-card-desc">Edit and read PDFs with natural language. Useful when client SOPs are in PDF format.</div>
+      <code class="skill-card-cmd">npx clawhub inspect nano-pdf</code>
+    </div>
+    <div class="skill-card">
+      <div class="skill-badge"><span class="badge bb">Optional</span></div>
+      <div class="skill-card-top"><div class="skill-card-icon"><svg class="icon"><use href="#icon-mail"></use></svg></div><div class="skill-card-name">himalaya</div></div>
+      <div class="skill-card-desc">Manage emails via IMAP/SMTP. Read, write, reply emails directly from OpenClaw. Great for email automation.</div>
+      <code class="skill-card-cmd">npx clawhub inspect himalaya</code>
+    </div>
+    <div class="skill-card">
+      <div class="skill-badge"><span class="badge bb">Optional</span></div>
+      <div class="skill-card-top"><div class="skill-card-icon"><svg class="icon"><use href="#icon-clipboard"></use></svg></div><div class="skill-card-name">trello</div></div>
+      <div class="skill-card-desc">Manage Trello boards, lists, and cards. Good for project management automation for clients.</div>
+      <code class="skill-card-cmd">npx clawhub inspect trello</code>
+    </div>
+  </div>
+
+  <h3>How to safely install a skill</h3>
+  <div class="code-wrap"><div class="code-bar"><div class="code-bar-left"><div class="dots"><span class="d1"></span><span class="d2"></span><span class="d3"></span></div><span class="code-label">VPS terminal</span></div><button class="copy-btn" onclick="cp(this)">copy</button></div><div class="code-body"><pre><span class="cm"># 1. Inspect first — check description and author</span>
+<span class="ck">npx</span> clawhub inspect notion
+
+<span class="cm"># 2. If looks clean — install</span>
+<span class="ck">npx</span> clawhub install notion
+
+<span class="cm"># 3. If VirusTotal warning appears → Cancel (select No)</span>
+<span class="cm"># 4. Verify installed skills</span>
+<span class="ck">node</span> openclaw.mjs skills list</pre></div></div>
+</div>
+
+<!-- BOOT.MD -->
+<div class="section" id="boot">
+  <div class="sec-tag"><div class="sec-n" style="background:var(--orange)">✦</div></div>
+  <div class="sec-h">BOOT.md — The Brain</div>
+  <div class="sec-sub">BOOT.md is loaded on every gateway startup. It tells OpenClaw how to behave and what commands to run.</div>
+
+  <p>Located at <code>~/openclaw/workspace/BOOT.md</code> — this is where you write instructions for your AI agent. The more specific you are, the better it works.</p>
+
+  <div class="code-wrap"><div class="code-bar"><div class="code-bar-left"><div class="dots"><span class="d1"></span><span class="d2"></span><span class="d3"></span></div><span class="code-label">BOOT.md — full example</span></div><button class="copy-btn" onclick="cp(this)">copy</button></div><div class="code-body"><pre><span class="cm"># My OpenClaw Agent Instructions</span>
+
+<span class="cs">## LinkedIn Posting
+When user says "post to LinkedIn: [text]" or "share on LinkedIn":
+- Run: bash ~/openclaw/scripts/post-linkedin.sh "[text]"
+- Confirm: "Scheduled on LinkedIn!"
+
+## Form Filling  
+When user says "fill the press release form":
+- Run: node openclaw.mjs browser navigate [FORM_URL]
+- Use browser fill to fill required fields
+- Submit and screenshot for confirmation
+
+## Daily Summary
+When user says "generate my daily LinkedIn post":
+- Create a professional post about AI automation / building in public
+- Max 200 words, 3-5 hashtags
+- Then run the LinkedIn posting script
+
+## General Rules
+- Always confirm actions with a brief message
+- If a command fails, show the error to the user
+- Keep responses short and clear</span></pre></div></div>
+
+  <div class="callout orange"><div class="callout-icon"><svg class="icon sm"><use href="#icon-openclaw"></use></svg></div><div class="callout-body"><div class="callout-title">Pro tip</div><div class="callout-text">The more detailed your BOOT.md, the smarter OpenClaw behaves. Update it anytime — just restart the gateway for changes to take effect.</div></div></div>
+</div>
+
+<!-- POSSIBILITIES -->
+<div class="sec-divider"><div class="sec-divider-line"></div><div class="sec-divider-label">All Possibilities</div><div class="sec-divider-line"></div></div>
+
+<div class="section" id="possibilities">
+  <div class="sec-tag"><div class="sec-n muted">✦</div></div>
+  <div class="sec-h">What You Can Automate</div>
+  <div class="sec-sub">Everything you can do now that OpenClaw is live on your VPS.</div>
+
+  <div class="poss-grid">
+    <div class="poss-card"><div class="poss-icon"><svg class="icon"><use href="#icon-megaphone"></use></svg></div><div class="poss-title">LinkedIn Auto-Posting</div><div class="poss-desc">Message bot → posts to LinkedIn via postmypost.io. Works with Twitter, Instagram, Facebook too.</div></div>
+    <div class="poss-card"><div class="poss-icon"><svg class="icon"><use href="#icon-note"></use></svg></div><div class="poss-title">Press Release Form Filling</div><div class="poss-desc">Browser automation fills any web form daily. Navigate → fill → submit → screenshot confirmation.</div></div>
+    <div class="poss-card"><div class="poss-icon"><svg class="icon"><use href="#icon-calendar"></use></svg></div><div class="poss-title">Scheduled Daily Posts</div><div class="poss-desc">Cron job runs at 9am, Claude generates a post from your SOP, posts automatically. Zero manual work.</div></div>
+    <div class="poss-card"><div class="poss-icon"><svg class="icon"><use href="#icon-globe"></use></svg></div><div class="poss-title">Web Search & Research</div><div class="poss-desc">Ask bot to search the web and summarize results directly in Telegram. Built-in, no setup needed.</div></div>
+    <div class="poss-card"><div class="poss-icon"><svg class="icon"><use href="#icon-book"></use></svg></div><div class="poss-title">Read Client SOP Docs</div><div class="poss-desc">Install gog or notion skill → bot reads SOP from Google Docs/Notion and acts on it automatically.</div></div>
+    <div class="poss-card"><div class="poss-icon"><svg class="icon"><use href="#icon-bell"></use></svg></div><div class="poss-title">Webhook Notifications</div><div class="poss-desc">Receive smart alerts from GitHub, Stripe, forms, server events — delivered to Telegram instantly.</div></div>
+    <div class="poss-card"><div class="poss-icon"><svg class="icon"><use href="#icon-chat"></use></svg></div><div class="poss-title">Multi-Client Setup</div><div class="poss-desc">Run multiple automations for different clients on same VPS. Each client = their own script + BOOT.md section.</div></div>
+    <div class="poss-card"><div class="poss-icon"><svg class="icon"><use href="#icon-robot"></use></svg></div><div class="poss-title">AI Content Generation</div><div class="poss-desc">Tell bot a topic → Claude writes LinkedIn post, tweet thread, or press release — ready to publish.</div></div>
+  </div>
+</div>
+
+<!-- TROUBLESHOOTING -->
+<div class="sec-divider"><div class="sec-divider-line"></div><div class="sec-divider-label">Troubleshooting</div><div class="sec-divider-line"></div></div>
+
+<div class="section" id="troubleshoot">
+  <div class="sec-tag"><div class="sec-n muted">?</div></div>
+  <div class="sec-h">Common Errors & Fixes</div>
+
+  <h3>502 Bad Gateway</h3>
+  <div class="result fail"><div class="result-head"><span class="dot"></span><svg class="icon sm"><use href="#icon-x"></use></svg><span>Error</span></div><div class="result-body">Browser shows 502 when visiting your domain</div></div>
+  <div class="result fix"><div class="result-head"><span class="dot"></span><svg class="icon sm"><use href="#icon-wrench"></use></svg><span>Fix</span></div><div class="result-body">systemctl --user start openclaw-gateway.service</div></div>
+
+  <h3>gateway.bind: Invalid input</h3>
+  <div class="result fail"><div class="result-head"><span class="dot"></span><svg class="icon sm"><use href="#icon-x"></use></svg><span>Error</span></div><div class="result-body">journalctl shows: "Invalid config: gateway.bind: Invalid input"</div></div>
+  <div class="result fix"><div class="result-head"><span class="dot"></span><svg class="icon sm"><use href="#icon-wrench"></use></svg><span>Fix</span></div><div class="result-body">nano ~/.openclaw/openclaw.json<br>Delete: "bind": "0.0.0.0",<br>systemctl --user restart openclaw-gateway.service</div></div>
+
+  <h3>Disconnected: 1008 pairing required</h3>
+  <div class="result fail"><div class="result-head"><span class="dot"></span><svg class="icon sm"><use href="#icon-x"></use></svg><span>Error</span></div><div class="result-body">Dashboard shows "disconnected (1008): pairing required"</div></div>
+  <div class="result fix"><div class="result-head"><span class="dot"></span><svg class="icon sm"><use href="#icon-wrench"></use></svg><span>Fix</span></div><div class="result-body">1. Check Caddyfile has WebSocket headers (Upgrade + Connection)<br>2. node openclaw.mjs devices list<br>   node openclaw.mjs devices approve &lt;ID&gt;</div></div>
+
+  <h3>postmypost.io 422 Errors</h3>
+  <div class="result fail"><div class="result-head"><span class="dot"></span><svg class="icon sm"><use href="#icon-x"></use></svg><span>Error</span></div><div class="result-body">Validation error in field 'publication_status'</div></div>
+  <div class="result fix"><div class="result-head"><span class="dot"></span><svg class="icon sm"><use href="#icon-wrench"></use></svg><span>Fix</span></div><div class="result-body">Use publication_status: 5 (pending) not 1 or 3<br>Allowed values for creation: 4=draft, 5=pending, 10=template, 11=workflow, 12=approval</div></div>
+
+  <h3>Diagnostic commands</h3>
+  <div class="code-wrap"><div class="code-bar"><div class="code-bar-left"><div class="dots"><span class="d1"></span><span class="d2"></span><span class="d3"></span></div><span class="code-label">quick debug</span></div><button class="copy-btn" onclick="cp(this)">copy</button></div><div class="code-body"><pre><span class="cm"># Gateway status & logs</span>
+<span class="ck">systemctl</span> --user status openclaw-gateway.service
+<span class="ck">journalctl</span> --user -u openclaw-gateway.service -n 50 --no-pager
+
+<span class="cm"># Caddy status & logs</span>
+<span class="ck">sudo</span> systemctl status caddy
+<span class="ck">sudo</span> journalctl -u caddy -n 30 --no-pager
+
+<span class="cm"># Port conflicts</span>
+<span class="ck">sudo</span> lsof -i :80
+<span class="ck">sudo</span> lsof -i :443
+
+<span class="cm"># OpenClaw health check</span>
+<span class="ck">node</span> openclaw.mjs health
+<span class="ck">node</span> openclaw.mjs doctor</pre></div></div>
+
+  <div class="final">
+    <span class="final-icon"><svg class="icon lg"><use href="#icon-openclaw"></use></svg></span>
+    <h3>You're Fully Live!</h3>
+    <p>Gateway running 24/7 · Telegram connected · LinkedIn posting working<br>Close your terminal — your VPS handles everything from here.</p>
+  </div>
+</div>
+
+</div><!-- /content -->
+</main>
+
+<script>
+function cp(btn) {
+  const pre = btn.closest('.code-wrap').querySelector('pre');
+  navigator.clipboard.writeText(pre.innerText).then(() => {
+    btn.textContent = 'copied!';
+    btn.classList.add('copied');
+    setTimeout(() => { btn.textContent = 'copy'; btn.classList.remove('copied'); }, 2000);
+  });
+}
+
+const allSections = [...document.querySelectorAll('[id]')];
+const allLinks = [...document.querySelectorAll('.sb-link')];
+const steppedLinks = allLinks.filter(l => !isNaN(parseInt(l.querySelector('.sb-num')?.textContent)));
+const fill = document.getElementById('pFill');
+const label = document.getElementById('pLabel');
+let maxSeen = 0;
+
+const obs = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (!e.isIntersecting) return;
+    const link = allLinks.find(l => l.getAttribute('href') === '#' + e.target.id);
+    if (!link) return;
+    allLinks.forEach(l => l.classList.remove('active'));
+    link.classList.add('active');
+    const idx = steppedLinks.indexOf(link);
+    if (idx !== -1 && idx > maxSeen) {
+      maxSeen = idx;
+      steppedLinks.slice(0, idx).forEach(l => l.classList.add('done'));
+      const pct = Math.round(((idx + 1) / steppedLinks.length) * 100);
+      fill.style.width = pct + '%';
+      label.textContent = pct + '%';
+    }
+  });
+}, { rootMargin: '-10% 0px -80% 0px' });
+
+allSections.forEach(s => obs.observe(s));
+</script>
+</body>
+</html>
