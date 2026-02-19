@@ -348,6 +348,26 @@ body {
 .callout.orange .callout-text { color: #8b3800; }
 .callout.orange .callout-icon { color: var(--orange); }
 
+/* ── QUICK LINKS ── */
+.quick-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 6px;
+}
+.quick-links a {
+  font-family: var(--mono);
+  font-size: 11px;
+  padding: 5px 9px;
+  border: 1px solid var(--border2);
+  border-radius: 6px;
+  color: var(--text2);
+  text-decoration: none;
+  background: #fff;
+  transition: all 0.12s;
+}
+.quick-links a:hover { border-color: var(--orange); color: var(--orange); }
+
 /* ── CODE ── */
 .code-wrap {
   margin: 14px 0;
@@ -844,6 +864,14 @@ ul li::before { content: '→'; color: var(--orange); font-size: 11px; margin-to
   <h1>The Complete<br><em>OpenClaw</em> Guide</h1>
   <p class="hero-lead">From zero to a fully automated Telegram bot that posts to LinkedIn, fills forms, and runs 24/7 on your own VPS. Local setup + VPS deployment + real automation.</p>
 
+  <div class="quick-links">
+    <a href="#start-here">Start here (3 commands)</a>
+    <a href="#requirements">Prereqs</a>
+    <a href="#s6">VPS install</a>
+    <a href="#s10">Gateway status</a>
+    <a href="#troubleshoot">Troubleshooting</a>
+  </div>
+
   <div class="hero-pills">
     <div class="pill"><span class="pill-dot" style="background:#1a7f4b"></span>Local Setup</div>
     <div class="pill"><span class="pill-dot" style="background:#1a5fa8"></span>VPS Deployment</div>
@@ -862,6 +890,21 @@ ul li::before { content: '→'; color: var(--orange); font-size: 11px; margin-to
 </section>
 
 <div class="content">
+
+<!-- START HERE -->
+<div class="section" id="start-here">
+  <div class="sec-tag"><div class="sec-n" style="background:var(--blue)">★</div></div>
+  <div class="sec-h">Start Here — 3 Commands</div>
+  <div class="sec-sub">Fast path to see it working locally before you dive into the full guide.</div>
+
+  <div class="code-wrap"><div class="code-bar"><div class="code-bar-left"><div class="dots"><span class="d1"></span><span class="d2"></span><span class="d3"></span></div><span class="code-label">local terminal</span></div><button class="copy-btn" onclick="cp(this)">copy</button></div><div class="code-body"><pre><span class="ck">git</span> clone https://github.com/openclaw/openclaw.git ~/openclaw
+<span class="ck">cd</span> ~/openclaw && <span class="ck">npm</span> install
+<span class="ck">node</span> openclaw.mjs gateway start</pre></div></div>
+
+  <div class="callout ok"><div class="callout-icon"><svg class="icon sm"><use href="#icon-check"></use></svg></div><div class="callout-body"><div class="callout-title">You should see</div><div class="callout-text">“OpenClaw Gateway running on ws://127.0.0.1:18789” and “Telegram channel: connected”. If it says <code>gateway.bind</code>, jump to Step 2 to remove the bind line.</div></div></div>
+
+  <div class="callout tip"><div class="callout-icon"><svg class="icon sm"><use href="#icon-lightbulb"></use></svg></div><div class="callout-body"><div class="callout-title">Next</div><div class="callout-text">If the quick start works, continue in order via the sidebar. If not, scroll to Troubleshooting → “gateway.bind: Invalid input”.</div></div></div>
+</div>
 
 <!-- WHAT IS -->
 <div class="section" id="arch">
@@ -895,12 +938,14 @@ ul li::before { content: '→'; color: var(--orange); font-size: 11px; margin-to
   <table style="margin-top:16px;">
     <thead><tr><th>Item</th><th>Details</th><th>Where</th><th>Status</th></tr></thead>
     <tbody>
-      <tr><td><strong>VPS</strong></td><td>Ubuntu 24.04, min 2GB RAM</td><td>Hetzner CX22 — €3.79/mo</td><td><span class="badge by">Required</span></td></tr>
+      <tr><td><strong>VPS</strong></td><td>Ubuntu 24.04 LTS, 2GB RAM minimum</td><td>Hetzner CX22 — €3.79/mo</td><td><span class="badge by">Required</span></td></tr>
       <tr><td><strong>Domain</strong></td><td>Any subdomain pointing to VPS</td><td>Namecheap / Porkbun</td><td><span class="badge by">Required</span></td></tr>
+      <tr><td><strong>Local OS</strong></td><td>macOS 13+ or Ubuntu 22.04/24.04</td><td>Your laptop/desktop</td><td><span class="badge bb">Local</span></td></tr>
       <tr><td><strong>Anthropic API Key</strong></td><td>Powers Claude AI brain</td><td>console.anthropic.com</td><td><span class="badge by">Required</span></td></tr>
       <tr><td><strong>Telegram Bot Token</strong></td><td>From @BotFather</td><td>t.me/BotFather</td><td><span class="badge by">Required</span></td></tr>
       <tr><td><strong>postmypost.io Account</strong></td><td>For social media posting API</td><td>postmypost.io</td><td><span class="badge bo">For Automation</span></td></tr>
-      <tr><td><strong>Node.js 20+</strong></td><td>Runtime for OpenClaw</td><td>Auto-installed in Step 6</td><td><span class="badge bb">Auto</span></td></tr>
+      <tr><td><strong>Node.js 20+</strong></td><td>Runtime for OpenClaw (LTS)</td><td>Auto-installed in Step 6</td><td><span class="badge bb">Auto</span></td></tr>
+      <tr><td><strong>Git 2.34+</strong></td><td>Required for clone</td><td>Preinstalled on macOS; <code>sudo apt install git</code> on Ubuntu</td><td><span class="badge bb">Auto</span></td></tr>
     </tbody>
   </table>
 </div>
@@ -952,6 +997,8 @@ ul li::before { content: '→'; color: var(--orange); font-size: 11px; margin-to
   <div class="code-wrap"><div class="code-bar"><div class="code-bar-left"><div class="dots"><span class="d1"></span><span class="d2"></span><span class="d3"></span></div><span class="code-label">~/openclaw</span></div><button class="copy-btn" onclick="cp(this)">copy</button></div><div class="code-body"><pre><span class="ck">node</span> openclaw.mjs gateway start</pre></div></div>
   <div class="result succ"><div class="result-head"><span class="dot"></span><svg class="icon sm"><use href="#icon-check"></use></svg><span>Running</span></div><div class="result-body">OpenClaw Gateway running on ws://127.0.0.1:18789<br>Telegram channel: connected</div></div>
   <div class="result fail"><div class="result-head"><span class="dot"></span><svg class="icon sm"><use href="#icon-x"></use></svg><span>"Invalid config: gateway.bind"</span></div><div class="result-body">Remove the "bind" line from ~/.openclaw/openclaw.json (see Step 2)</div></div>
+
+  <div class="callout ok"><div class="callout-icon"><svg class="icon sm"><use href="#icon-check"></use></svg></div><div class="callout-body"><div class="callout-title">Local checkpoint</div><div class="callout-text">Node shows v20+, gateway prints “running on ws://127.0.0.1:18789”. If Telegram is configured, a ping should get a reply. If not, configure in Step 2 and rerun.</div></div></div>
 </div>
 
 <!-- VPS -->
@@ -998,6 +1045,14 @@ ul li::before { content: '→'; color: var(--orange); font-size: 11px; margin-to
 <span class="cm"># Clone OpenClaw</span>
 <span class="ck">git</span> clone https://github.com/openclaw/openclaw.git ~/openclaw
 <span class="ck">cd</span> ~/openclaw && npm install</pre></div></div>
+
+  <div class="callout ok"><div class="callout-icon"><svg class="icon sm"><use href="#icon-check"></use></svg></div><div class="callout-body"><div class="callout-title">Verify the service early</div><div class="callout-text">Install/repair the systemd user service now so it stays running after SSH closes.</div></div></div>
+
+  <div class="code-wrap"><div class="code-bar"><div class="code-bar-left"><div class="dots"><span class="d1"></span><span class="d2"></span><span class="d3"></span></div><span class="code-label">VPS terminal</span></div><button class="copy-btn" onclick="cp(this)">copy</button></div><div class="code-body"><pre><span class="ck">node</span> openclaw.mjs gateway install <span class="cv">--force</span>
+<span class="ck">node</span> openclaw.mjs gateway status
+<span class="ck">systemctl</span> --user status openclaw-gateway.service</pre></div></div>
+
+  <div class="callout tip"><div class="callout-icon"><svg class="icon sm"><use href="#icon-lightbulb"></use></svg></div><div class="callout-body"><div class="callout-title">If status is inactive</div><div class="callout-text">Run <code>node openclaw.mjs doctor --repair</code>, then <code>systemctl --user restart openclaw-gateway.service</code>. Enable lingering once in Step 13.</div></div></div>
 </div>
 
 <hr class="divider">
@@ -1053,6 +1108,8 @@ ul li::before { content: '→'; color: var(--orange); font-size: 11px; margin-to
   <div class="code-wrap"><div class="code-bar"><div class="code-bar-left"><div class="dots"><span class="d1"></span><span class="d2"></span><span class="d3"></span></div><span class="code-label">start caddy</span></div><button class="copy-btn" onclick="cp(this)">copy</button></div><div class="code-body"><pre><span class="ck">sudo</span> systemctl enable caddy && sudo systemctl start caddy</pre></div></div>
 
   <div class="result fail"><div class="result-head"><span class="dot"></span><svg class="icon sm"><use href="#icon-x"></use></svg><span>"Address already in use :80 or :443"</span></div><div class="result-body">sudo systemctl stop nginx && sudo systemctl disable nginx<br>sudo systemctl start caddy</div></div>
+
+  <div class="callout ok"><div class="callout-icon"><svg class="icon sm"><use href="#icon-check"></use></svg></div><div class="callout-body"><div class="callout-title">Domain checkpoint</div><div class="callout-text"><code>dig openclaw.yourdomain.xyz +short</code> returns your VPS IP, and <code>sudo systemctl status caddy</code> shows active. If not, recheck Step 8 DNS TTL and restart caddy.</div></div></div>
 </div>
 
 <!-- GO LIVE -->
@@ -1068,6 +1125,8 @@ ul li::before { content: '→'; color: var(--orange); font-size: 11px; margin-to
 
   <div class="result succ"><div class="result-head"><span class="dot"></span><svg class="icon sm"><use href="#icon-check"></use></svg><span>Active</span></div><div class="result-body">Active: active (running) since ...</div></div>
   <div class="result fail"><div class="result-head"><span class="dot"></span><svg class="icon sm"><use href="#icon-x"></use></svg><span>exit-code / crash</span></div><div class="result-body">journalctl --user -u openclaw-gateway.service -n 30 --no-pager<br>Most likely: "gateway.bind" still in config → remove it</div></div>
+
+  <div class="callout ok"><div class="callout-icon"><svg class="icon sm"><use href="#icon-check"></use></svg></div><div class="callout-body"><div class="callout-title">Go-live checkpoint</div><div class="callout-text"><code>systemctl --user status openclaw-gateway.service</code> shows <strong>active (running)</strong> and <code>node openclaw.mjs health</code> prints green checks. If either fails, fix here before pairing the dashboard.</div></div></div>
 </div>
 
 <hr class="divider">
@@ -1323,14 +1382,17 @@ When user says "generate my daily LinkedIn post":
   <h3>502 Bad Gateway</h3>
   <div class="result fail"><div class="result-head"><span class="dot"></span><svg class="icon sm"><use href="#icon-x"></use></svg><span>Error</span></div><div class="result-body">Browser shows 502 when visiting your domain</div></div>
   <div class="result fix"><div class="result-head"><span class="dot"></span><svg class="icon sm"><use href="#icon-wrench"></use></svg><span>Fix</span></div><div class="result-body">systemctl --user start openclaw-gateway.service</div></div>
+  <div class="callout tip"><div class="callout-icon"><svg class="icon sm"><use href="#icon-lightbulb"></use></svg></div><div class="callout-body"><div class="callout-title">Where this shows up</div><div class="callout-text">Usually right after Step 9–10 (Caddy + Start Gateway). Re-run the status commands from those steps.</div></div></div>
 
   <h3>gateway.bind: Invalid input</h3>
   <div class="result fail"><div class="result-head"><span class="dot"></span><svg class="icon sm"><use href="#icon-x"></use></svg><span>Error</span></div><div class="result-body">journalctl shows: "Invalid config: gateway.bind: Invalid input"</div></div>
   <div class="result fix"><div class="result-head"><span class="dot"></span><svg class="icon sm"><use href="#icon-wrench"></use></svg><span>Fix</span></div><div class="result-body">nano ~/.openclaw/openclaw.json<br>Delete: "bind": "0.0.0.0",<br>systemctl --user restart openclaw-gateway.service</div></div>
+  <div class="callout tip"><div class="callout-icon"><svg class="icon sm"><use href="#icon-lightbulb"></use></svg></div><div class="callout-body"><div class="callout-title">Where this shows up</div><div class="callout-text">Happens after running the configure wizard in Step 2 or Step 7. Remove the bind line, restart, and repeat the status check.</div></div></div>
 
   <h3>Disconnected: 1008 pairing required</h3>
   <div class="result fail"><div class="result-head"><span class="dot"></span><svg class="icon sm"><use href="#icon-x"></use></svg><span>Error</span></div><div class="result-body">Dashboard shows "disconnected (1008): pairing required"</div></div>
   <div class="result fix"><div class="result-head"><span class="dot"></span><svg class="icon sm"><use href="#icon-wrench"></use></svg><span>Fix</span></div><div class="result-body">1. Check Caddyfile has WebSocket headers (Upgrade + Connection)<br>2. node openclaw.mjs devices list<br>   node openclaw.mjs devices approve &lt;ID&gt;</div></div>
+  <div class="callout tip"><div class="callout-icon"><svg class="icon sm"><use href="#icon-lightbulb"></use></svg></div><div class="callout-body"><div class="callout-title">Where this shows up</div><div class="callout-text">Appears during Step 11 (Pair Dashboard). Verify WebSocket headers from Step 9 and approve devices.</div></div></div>
 
   <h3>postmypost.io 422 Errors</h3>
   <div class="result fail"><div class="result-head"><span class="dot"></span><svg class="icon sm"><use href="#icon-x"></use></svg><span>Error</span></div><div class="result-body">Validation error in field 'publication_status'</div></div>
